@@ -48,21 +48,25 @@ public class CameraScript : MonoBehaviour
             // Inverse percentage = 1 - ((input - min) * 100) / (max - min))
             // 1.1 is used to ensure movement even at 100% (1) across the range (which would make the speed 0)
             float relativeSpeed = 1.1f - ((position.y - heightMinClamp) / (heightMaxClamp - heightMinClamp));
+            if (Input.GetKey(KeyCode.LeftShift)) relativeSpeed *= position.y * 0.2f;
             position += parent.transform.right * -relativeSpeed * baseSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.D))
         {
             float relativeSpeed = 1.1f - ((position.y - heightMinClamp) / (heightMaxClamp - heightMinClamp));
+            if (Input.GetKey(KeyCode.LeftShift)) relativeSpeed *= position.y * 0.2f;
             position += parent.transform.right * relativeSpeed * baseSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.W))
         {
             float relativeSpeed = 1.1f - ((position.y - heightMinClamp) / (heightMaxClamp - heightMinClamp));
+            if (Input.GetKey(KeyCode.LeftShift)) relativeSpeed *= position.y * 0.2f;
             position += parent.transform.forward * relativeSpeed * baseSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.S))
         {
             float relativeSpeed = 1.1f - ((position.y - heightMinClamp) / (heightMaxClamp - heightMinClamp));
+            if (Input.GetKey(KeyCode.LeftShift)) relativeSpeed *= position.y *0.2f;
             position += parent.transform.forward * -relativeSpeed * baseSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.Q))
