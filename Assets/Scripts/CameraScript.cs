@@ -5,17 +5,22 @@ using UnityEngine;
 public class CameraScript : MonoBehaviour
 {
     //Define variables
-    Vector3 position;
-    float xRot;
-    float yRot;
-    float zRot;
-    [SerializeField]
-    Camera cameraObject;
-    [SerializeField]
-    GameObject parent;
+    Vector3 position;//!<Position of the Camera/ParentObject
+    float xRot;//!<X Rotation of the Camera
+    float yRot;//!<Y Rotation of the Camera
+    float zRot;//!<Z Rotation of the Camera - not currently used
+    Camera cameraObject;//!<The Camera itself
+    GameObject parent;//!<The parent object of the Camera
 
-    Vector3 lastMousePos;
-    Vector3 deltaMousePos;
+    [SerializeField]
+    float heightMinClamp;//!<Minimum height of the Camera
+    [SerializeField]
+    float heightMaxClamp;//!<Maximum height of the Camera
+    [SerializeField]
+    float baseSpeed;//!<Speed at which the camera moves
+
+    Vector3 lastMousePos;//!<Last known position of the mouse
+    Vector3 deltaMousePos;//!<Difference between the last known mouse position and the current mouse position
 
     // Start is called before the first frame update
     void Start()
@@ -36,21 +41,29 @@ public class CameraScript : MonoBehaviour
     void Update()
     {
         //Inputs go here
+        //Keyboard Keys
         if (Input.GetKey(KeyCode.A))
         {
-            position += parent.transform.right * -0.1f * Time.time;
+            // Percentage across a range = ((input - min) * 100) / (max - min)
+            // Inverse percentage = 1 - ((input - min) * 100) / (max - min))
+            // 1.1 is used to ensure movement even at 100% (1) across the range (which would make the speed 0)
+            float relativeSpeed = 1.1f - ((position.y - heightMinClamp) / (heightMaxClamp - heightMinClamp));
+            position += parent.transform.right * -relativeSpeed * baseSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            position += parent.transform.right * 0.1f * Time.time;
+            float relativeSpeed = 1.1f - ((position.y - heightMinClamp) / (heightMaxClamp - heightMinClamp));
+            position += parent.transform.right * relativeSpeed * baseSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.W))
         {
-            position += parent.transform.forward * 0.1f * Time.time;
+            float relativeSpeed = 1.1f - ((position.y - heightMinClamp) / (heightMaxClamp - heightMinClamp));
+            position += parent.transform.forward * relativeSpeed * baseSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            position += parent.transform.forward * -0.1f * Time.time;
+            float relativeSpeed = 1.1f - ((position.y - heightMinClamp) / (heightMaxClamp - heightMinClamp));
+            position += parent.transform.forward * -relativeSpeed * baseSpeed * Time.deltaTime;
         }
         if (Input.GetKey(KeyCode.Q))
         {
@@ -67,10 +80,17 @@ public class CameraScript : MonoBehaviour
             xRot -= deltaMousePos.y - lastMousePos.y;
             yRot += deltaMousePos.x - lastMousePos.x;
         }
-
+        //Scroll Wheel
+        Vector2 scrollDelta = Input.mouseScrollDelta;
+        position.y -= scrollDelta.y;
+        if (position.y < heightMinClamp) position.y = heightMinClamp;
+        if (position.y > heightMaxClamp) position.y = heightMaxClamp;
+        //Record known mouse position
         lastMousePos = Input.mousePosition;
+        
         //Update Camera
         parent.transform.position = position;
+        //Rotation of camera is separate from the parent object - need to be set separately
         parent.transform.rotation = Quaternion.Euler(0, yRot, 0);
         cameraObject.transform.rotation = Quaternion.Euler(xRot, yRot, zRot);
     }

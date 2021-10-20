@@ -416,8 +416,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c513e4770406b0e4d9b85bcd8eae6a94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraObject: {fileID: 0}
-  parent: {fileID: 0}
+  heightMinClamp: 10
+  heightMaxClamp: 40
+  baseSpeed: 50
 --- !u!1 &1092086090
 GameObject:
   m_ObjectHideFlags: 0
