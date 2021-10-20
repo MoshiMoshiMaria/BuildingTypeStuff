@@ -9,7 +9,10 @@ public class CameraScript : MonoBehaviour
     float xRot;
     float yRot;
     float zRot;
+    [SerializeField]
     Camera cameraObject;
+    [SerializeField]
+    GameObject parent;
 
     Vector3 lastMousePos;
     Vector3 deltaMousePos;
@@ -19,7 +22,8 @@ public class CameraScript : MonoBehaviour
     {
         //Initialise based on camera's current position
         cameraObject = gameObject.GetComponent<Camera>();
-        position = cameraObject.transform.position;
+        parent = gameObject.transform.parent.gameObject;
+        position = parent.transform.position;
         xRot = cameraObject.transform.rotation.eulerAngles.x;
         yRot = cameraObject.transform.rotation.eulerAngles.y;
         zRot = cameraObject.transform.rotation.eulerAngles.z;
@@ -34,19 +38,19 @@ public class CameraScript : MonoBehaviour
         //Inputs go here
         if (Input.GetKey(KeyCode.A))
         {
-            position += gameObject.transform.right * -0.1f * Time.time;
+            position += parent.transform.right * -0.1f * Time.time;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            position += gameObject.transform.right * 0.1f * Time.time;
+            position += parent.transform.right * 0.1f * Time.time;
         }
         if (Input.GetKey(KeyCode.W))
         {
-            position += gameObject.transform.forward * 0.1f * Time.time;
+            position += parent.transform.forward * 0.1f * Time.time;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            position += gameObject.transform.forward * -0.1f * Time.time;
+            position += parent.transform.forward * -0.1f * Time.time;
         }
         if (Input.GetKey(KeyCode.Q))
         {
@@ -66,8 +70,8 @@ public class CameraScript : MonoBehaviour
 
         lastMousePos = Input.mousePosition;
         //Update Camera
-        gameObject.transform.position = position;
-        gameObject.transform.rotation = Quaternion.Euler(0, yRot, 0);
-        cameraObject.transform.rotation = Quaternion.Euler(xRot, 0, zRot);
+        parent.transform.position = position;
+        parent.transform.rotation = Quaternion.Euler(0, yRot, 0);
+        cameraObject.transform.rotation = Quaternion.Euler(xRot, yRot, zRot);
     }
 }
